@@ -81,8 +81,11 @@ extension AFDuck {
 
     static func runShortcut(named name: String) throws {
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/shortcuts")
-        process.arguments = ["run", name]
+        process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        process.arguments = [
+            "-lc",
+            "shortcuts run \(shellQuoted(name))",
+        ]
 
         let errorPipe = Pipe()
         process.standardError = errorPipe
@@ -102,6 +105,10 @@ extension AFDuck {
                 detail: errorOutput
             )
         }
+    }
+
+    static func shellQuoted(_ text: String) -> String {
+        "'\(text.replacingOccurrences(of: "'", with: "'\"'\"'"))'"
     }
 }
 
